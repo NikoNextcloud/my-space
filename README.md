@@ -15,6 +15,10 @@
 
 ## Синхронизация между компютър и телефон
 
+За много подробна инструкция отвори файла:
+
+`SUPABASE-NASTROYKA-PODROBNO.md`
+
 GitHub Pages не може сам да записва промени, затова за синхронизация е добавена опция със Supabase.
 
 1. Отвори https://supabase.com и създай безплатен project.
@@ -44,14 +48,14 @@ with check (true);
 ```
 
 3. В Supabase отвори `Project Settings` → `API`.
-4. Копирай `Project URL` и `anon public` key.
+4. Копирай `Project URL` и `Publishable key` или `anon public` key.
 5. Отвори `sync-config.js` и попълни:
 
 ```js
 window.DASHBOARD_SYNC_CONFIG = {
   enabled: true,
   supabaseUrl: 'ТУК_PROJECT_URL',
-  supabaseAnonKey: 'ТУК_ANON_PUBLIC_KEY',
+  supabaseAnonKey: 'ТУК_PUBLIC_KEY',
   table: 'dashboard_links',
   profileId: 'my-space'
 };
