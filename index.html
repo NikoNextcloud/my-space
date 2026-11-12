@@ -1,63 +1,201 @@
 <!doctype html>
 <html lang="bg">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="Личен dashboard с бърз достъп до любими приложения и инструменти.">
-  <title>Моят Dashboard</title>
-  <link rel="icon" type="image/png" href="assets/dashboard-icon-3.png">
-  <link rel="apple-touch-icon" href="assets/dashboard-icon-3.png">
-  <link rel="stylesheet" href="styles.css">
-</head>
-<body>
-  <div class="ambient ambient-one"></div>
-  <div class="ambient ambient-two"></div>
-  <main class="shell">
-    <header class="topbar">
-      <a class="brand" href="#" aria-label="Начало">
-        <img class="brand-logo" src="assets/dashboard-icon-3.png" alt="">
-        <span><strong>MY SPACE</strong><small>Личен dashboard</small></span>
-      </a>
-      <div class="top-actions">
-        <span class="sync-status" id="syncStatus" data-state="idle">Зареждане...</span>
-        <button class="icon-button" id="themeButton" type="button" aria-label="Смени темата">☼</button>
-        <button class="add-button" id="openAddButton" type="button"><span>＋</span> Добави линк</button>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <meta
+      name="description"
+      content="MY SPACE — централен работен център за проекти, проверки и решения."
+    />
+    <meta name="robots" content="noindex,nofollow" />
+    <title>MY SPACE · Работен център</title>
+    <link rel="icon" href="assets/dashboard-icon-3.png" />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <a class="skip" href="#content">Към съдържанието</a>
+    <aside class="sidebar" id="sidebar">
+      <a class="brand" href="#overview"
+        ><span class="brand-mark">M<span>↗</span></span
+        ><span>MY SPACE<small>РАБОТЕН ЦЕНТЪР</small></span></a
+      >
+      <div class="workspace">
+        <span class="avatar">NT</span>
+        <div>Николай Траянов<small>Лично пространство</small></div>
+        <span class="tiny-dot"></span>
       </div>
-    </header>
-
-    <section class="content" aria-labelledby="linksTitle">
-      <div class="section-heading">
-        <div><p class="eyebrow">ТВОЯТА КОЛЕКЦИЯ</p><h2 id="linksTitle">Приложения</h2></div>
-        <p id="resultCount"></p>
+      <p class="nav-label">РАБОТНО ПРОСТРАНСТВО</p>
+      <nav aria-label="Основна навигация">
+        <a href="#overview" data-view="overview"><span>▦</span>Общ преглед</a
+        ><a href="#today" data-view="today"
+          ><span>◷</span>Днес <span id="todayCount" class="count">0</span></a
+        ><a href="#review" data-view="review"><span>⑂</span>Преди публикуване</a
+        ><a href="#history" data-view="history"
+          ><span>↶</span>История на решенията</a
+        >
+      </nav>
+      <div class="nav-label nav-projects">
+        ПРОЕКТИ <span id="projectCount">19</span>
       </div>
-      <label class="search-box compact-search">
-        <span>⌕</span>
-        <input id="searchInput" type="search" placeholder="Търси приложение..." autocomplete="off">
-        <kbd>/</kbd>
-      </label>
-      <div class="filters" id="filters" aria-label="Филтри"></div>
-      <div class="cards" id="cards"></div>
-      <div class="empty-state" id="emptyState" hidden><span>⌕</span><h3>Няма намерени резултати</h3><p>Опитай с друга дума или категория.</p></div>
-    </section>
-
-    <footer><span>MY SPACE</span><p>Твоите важни места, винаги наблизо.</p></footer>
-  </main>
-
-  <dialog id="addDialog">
-    <form id="addForm">
-      <div class="modal-heading"><div><p class="eyebrow" id="dialogEyebrow">НОВ ПРЯК ПЪТ</p><h2 id="dialogTitle">Добави линк</h2></div><button class="close-button" id="closeDialogButton" type="button" aria-label="Затвори">×</button></div>
-      <p class="modal-note">При включен облак промените се виждат и на телефона. Без облак се пазят само в този браузър.</p>
-      <input name="id" type="hidden">
-      <label>Име<input name="title" required maxlength="40" placeholder="Напр. Моето приложение"></label>
-      <label>Адрес<input name="url" type="text" required placeholder="https://..."></label>
-      <label>Категория<select name="category"><option>Инструменти</option><option>Медия</option><option>Спорт</option><option>Образование</option><option>AI & Дизайн</option><option>Други</option></select></label>
-      <label>Кратко описание<input name="description" maxlength="90" placeholder="Какво прави този линк?"></label>
-      <div class="form-actions"><button class="delete-button" id="deleteButton" type="button" hidden>Изтрий</button><span class="form-spacer"></span><button class="cancel-button" id="cancelButton" type="button">Отказ</button><button class="save-button" id="saveButton" type="submit">Запази</button></div>
-    </form>
-  </dialog>
-
-  <script src="links.js"></script>
-  <script src="sync-config.js"></script>
-  <script src="app.js"></script>
-</body>
+      <nav id="projectNav" aria-label="Проекти"></nav>
+      <div class="sidebar-bottom">
+        <a href="legacy/index.html"><span>↗</span> Приложения и връзки</a
+        ><button id="exportButton">↓ Експорт на работните данни</button
+        ><button id="importButton">↑ Импорт на архив</button
+        ><input id="importFile" type="file" accept="application/json" hidden />
+        <div class="policy">
+          <span>♧</span>
+          <div>
+            Публикуване с одобрение<small>Ти вземаш последното решение.</small>
+          </div>
+        </div>
+      </div>
+    </aside>
+    <div class="main-shell">
+      <header class="topbar">
+        <div class="breadcrumb">
+          <button
+            id="menuButton"
+            aria-label="Отвори меню"
+            aria-expanded="false"
+          >
+            ☰</button
+          ><span>Работно пространство</span><b>/</b
+          ><strong id="breadcrumb">Общ преглед</strong>
+        </div>
+        <div class="header-right">
+          <span class="date" id="currentDate"></span
+          ><span class="avatar small">NT</span>
+        </div>
+      </header>
+      <main id="content" tabindex="-1">
+        <div class="page-heading">
+          <div>
+            <p class="eyebrow" id="eyebrow">ВСИЧКО НА ЕДНО МЯСТО</p>
+            <h1 id="pageTitle">Твоите проекти. Ясна посока.</h1>
+            <p class="subtitle" id="subtitle">
+              От последната промяна до следващото решение.
+            </p>
+          </div>
+          <button class="button primary" id="refreshButton">
+            <span>↻</span> Обнови проверките
+          </button>
+        </div>
+        <div id="storageNotice" class="notice"></div>
+        <section class="metrics" id="metrics" aria-label="Обобщение"></section>
+        <div class="toolbar">
+          <div class="view-tabs">
+            <a href="#overview" data-view="overview">Всички проекти</a
+            ><a href="#today" data-view="today">Днес</a
+            ><a href="#review" data-view="review">За преглед</a>
+          </div>
+          <div class="filter-group">
+            <label class="search"
+              ><span>⌕</span
+              ><input
+                id="search"
+                type="search"
+                placeholder="Търси проект, задача..."
+                aria-label="Търси проект, задача" /></label
+            ><select id="projectFilter" aria-label="Филтър по проект">
+              <option value="all">Всички проекти</option></select
+            ><select id="statusFilter" aria-label="Филтър по статус">
+              <option value="all">Всички статуси</option>
+              <option value="active">В развитие</option>
+              <option value="blocked">Блокиран</option>
+              <option value="review">За преглед</option>
+              <option value="paused">На пауза</option>
+              <option value="unlinked">За свързване</option>
+              <option value="linked">Уеб приложение</option>
+              <option value="attention">Има проблем</option>
+            </select>
+          </div>
+        </div>
+        <div id="view"></div>
+        <footer>
+          <span><span class="tiny-dot"></span> Контролът остава при теб</span
+          ><span>MY SPACE <b>·</b> Версия за преглед</span>
+        </footer>
+      </main>
+    </div>
+    <dialog id="editor">
+      <form id="editForm">
+        <div class="dialog-head">
+          <div>
+            <p class="eyebrow">РАБОТЕН ЗАПИС</p>
+            <h2 id="editorTitle">Нов запис</h2>
+          </div>
+          <button type="button" data-close aria-label="Затвори">×</button>
+        </div>
+        <input name="recordId" type="hidden" /><label
+          >Проект<select
+            name="project"
+            id="editProject"
+            required
+          ></select></label
+        ><label
+          >Тип<select name="kind">
+            <option value="tasks">Задача</option>
+            <option value="notes">Бележка</option>
+            <option value="decisions">Решение</option>
+          </select></label
+        ><label>Заглавие<input name="title" required maxlength="150" /></label
+        ><label
+          >Описание<textarea name="body" rows="4" maxlength="5000"></textarea>
+        </label>
+        <div class="form-row">
+          <label
+            >Статус<select name="state">
+              <option value="open">Отворен</option>
+              <option value="progress">В работа</option>
+              <option value="blocked">Блокиран</option>
+              <option value="done">Завършен</option>
+            </select></label
+          ><label>Срок<input name="due" type="date" /></label>
+        </div>
+        <p class="muted">
+          Всяко записване добавя нова версия. Предишните записи остават в
+          историята.
+        </p>
+        <div class="form-actions">
+          <button class="button" type="button" data-close>Отказ</button
+          ><button class="button primary" type="submit">Запази версия</button>
+        </div>
+      </form>
+    </dialog>
+    <dialog id="settings">
+      <form id="settingsForm">
+        <div class="dialog-head">
+          <h2>Настройки на проекта</h2>
+          <button type="button" data-close aria-label="Затвори">×</button>
+        </div>
+        <input name="project" type="hidden" /><label
+          >Работен статус<select name="status">
+            <option value="active">В развитие</option>
+            <option value="review">За преглед</option>
+            <option value="blocked">Блокиран</option>
+            <option value="paused">На пауза</option>
+          </select></label
+        >
+        <div id="linkInputs"></div>
+        <p class="muted">
+          Промените се пазят с история. Тези адреси не дават достъп за
+          публикуване.
+        </p>
+        <div class="form-actions">
+          <button class="button" type="button" data-close>Отказ</button
+          ><button class="button primary">Запази версия</button>
+        </div>
+      </form>
+    </dialog>
+    <dialog id="historyDialog">
+      <div class="dialog-head">
+        <h2>История на редакциите</h2>
+        <button data-close aria-label="Затвори">×</button>
+      </div>
+      <div id="historyContent"></div>
+    </dialog>
+    <div id="toast" role="status" aria-live="polite"></div>
+    <script type="module" src="app.js"></script>
+  </body>
 </html>
