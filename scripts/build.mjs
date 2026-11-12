@@ -1,4 +1,6 @@
 import { readFile, writeFile, mkdir, rm } from "node:fs/promises";
+import { pathToFileURL } from "node:url";
+import { resolve } from "node:path";
 const files = [
   "index.html",
   "styles.css",
@@ -30,9 +32,11 @@ await mkdir("dist/server", { recursive: true });
 await mkdir("dist/.openai", { recursive: true });
 const source = await readFile("worker/index.js", "utf8");
 const projects = await readFile("projects.js", "utf8");
+const projectImport = /import\s*\{\s*projects\s*\}\s*from\s*["']\.\.\/projects\.js["'];?/;
+if (!projectImport.test(source)) throw new Error("Project import was not found; refusing an incomplete bundle.");
 await writeFile(
   "dist/server/index.js",
-  source.replace("import {projects} from '../projects.js';", projects) +
+  source.replace(projectImport, projects) +
     `\nconst ASSETS=${JSON.stringify(assets)};\n`,
 );
 await writeFile(
@@ -40,3 +44,9 @@ await writeFile(
   await readFile(".openai/hosting.json"),
 );
 console.log("Built Worker and " + files.length + " embedded assets.");
+const { default: worker } = await import(pathToFileURL(resolve("dist/server/index.js")).href);
+const response = await worker.fetch(new Request("https://build-check.local/"), {}, {});
+if (response.status !== 200 || !(await response.text()).includes("MY SPACE")) {
+  throw new Error("The built Worker could not serve the application.");
+}
+console.log("Built Worker import and HTTP smoke check passed.");
