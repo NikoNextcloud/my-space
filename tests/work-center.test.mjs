@@ -264,3 +264,26 @@ test("connector outcomes preserve errors, diagnostics and falsy data", () => {
     "tool_error",
   );
 });
+
+test("the main catalog includes every original application once and preserves core project IDs", async () => {
+  const vm = await import("node:vm");
+  const context = { window: {} };
+  vm.runInNewContext(readFileSync("links.js", "utf8"), context);
+  const { projects } = await import("../projects.js");
+  const normalize = (url) => url.replace(/\/$/, "").toLowerCase();
+  for (const item of context.window.DASHBOARD_LINKS) {
+    assert.equal(
+      projects.filter(
+        (p) => p.site && normalize(p.site) === normalize(item.url),
+      ).length,
+      1,
+      item.title + " must appear once",
+    );
+  }
+  assert.equal(projects.length, 19);
+  assert.deepEqual(
+    projects.slice(0, 6).map((p) => p.id),
+    ["vinilpechat", "football", "audit", "caritas", "heritage", "fitness"],
+  );
+  assert.equal(new Set(projects.map((p) => p.id)).size, projects.length);
+});

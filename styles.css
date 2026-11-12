@@ -1440,3 +1440,22 @@ select {
     text-overflow: ellipsis;
   }
 }
+#moreProjects {
+  margin-top: 5px;
+}
+#moreProjects summary {
+  cursor: pointer;
+  color: var(--muted);
+  padding: 12px 10px;
+  font-size: 12px;
+  border-top: 1px solid var(--line);
+}
+#moreProjects summary:hover {
+  color: var(--accent);
+}
+.app-launch {
+  margin-top: 14px;
+}
+.app-launch .button {
+  width: 100%;
+}

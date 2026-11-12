@@ -19,6 +19,7 @@ const uid = () => crypto.randomUUID(),
     blocked: "Блокиран",
     paused: "На пауза",
     unlinked: "За свързване",
+    linked: "Уеб приложение",
     attention: "Има проблем",
   },
   recordStates = {
@@ -87,7 +88,7 @@ function sourceData(p, key) {
   return source(p, key)?.data;
 }
 function state(p) {
-  if (!projectData(p).repo) return "unlinked";
+  if (!projectData(p).repo) return projectData(p).site ? "linked" : "unlinked";
   const runs = currentRuns(p);
   if (
     runs.some((r) =>
@@ -109,7 +110,7 @@ function getProjects() {
       ($("#statusFilter").value === "all" ||
         state(p) === $("#statusFilter").value) &&
       (!q ||
-        `${p.name} ${p.description} ${["tasks", "notes", "decisions"].flatMap((k) => (docs[p.id]?.[k] || []).map((r) => r.title + " " + r.body)).join(" ")}`
+        `${p.name} ${(p.aliases || []).join(" ")} ${p.description} ${["tasks", "notes", "decisions"].flatMap((k) => (docs[p.id]?.[k] || []).map((r) => r.title + " " + r.body)).join(" ")}`
           .toLocaleLowerCase("bg")
           .includes(q)),
   );
@@ -130,12 +131,15 @@ function reviewPRs(ps = projects) {
 }
 function renderNav() {
   const route = current();
-  $("#projectNav").innerHTML = projects
-    .map(
-      (p) =>
-        `<a href="#project/${p.id}" class="${route.id === p.id ? "active" : ""}"><span class="project-dot" style="background:${p.color}"></span>${esc(p.name)}</a>`,
-    )
-    .join("");
+  const moreOpen =
+    $("#moreProjects")?.open ||
+    projects.slice(6).some((p) => p.id === route.id);
+  const navItem = (p) =>
+    `<a href="#project/${p.id}" class="${route.id === p.id ? "active" : ""}"><span class="project-dot" style="background:${p.color}"></span>${esc(p.name)}</a>`;
+  $("#projectNav").innerHTML =
+    projects.slice(0, 6).map(navItem).join("") +
+    `<details id="moreProjects" ${moreOpen ? "open" : ""}><summary>Още приложения (${projects.length - 6})</summary>${projects.slice(6).map(navItem).join("")}</details>`;
+  $("#projectCount").textContent = projects.length;
   document
     .querySelectorAll("[data-view]")
     .forEach((el) =>
@@ -154,9 +158,9 @@ function renderMetrics(ps) {
     read = ps.filter((p) => sourceData(p, "pulls")).length;
   $("#metrics").innerHTML = [
     [
-      "Проекти в пространството",
+      "Приложения и проекти",
       String(ps.length).padStart(2, "0"),
-      "Шест фокуса. Един работен център.",
+      "Цялата колекция. Един работен център.",
       "▦",
     ],
     [
@@ -275,7 +279,7 @@ function projectCard(p) {
   const prs = sourceData(p, "pulls"),
     commit = sourceData(p, "commits")?.[0],
     s = source(p, "repo");
-  return `<article class="project-card" style="--project-color:${p.color}"><div class="card-heading"><span class="project-logo">${p.initials}</span>${badge(state(p))}</div><h3><a href="#project/${p.id}">${esc(p.name)}</a></h3><div class="category">${esc(p.category)}</div><p class="description">${esc(p.description)}</p>${checkRow(p)}<div class="card-foot"><span>⑂ ${prs ? prs.filter((r) => r.state === "open").length : "—"} отворени PR</span><a href="#project/${p.id}">Към таблото <span>→</span></a></div><div class="card-meta">${commit ? `Последно: ${esc(commit.commit?.message?.split("\n")[0])}` : s?.error ? esc(s.error) : p.repo ? "Очаква обновяване от GitHub" : "Добави адрес на хранилището"}${Object.values(live[p.id] || {}).some((value) => value.stale) ? " · Има остарели данни" : ""}</div></article>`;
+  return `<article class="project-card" style="--project-color:${p.color}"><div class="card-heading"><span class="project-logo">${p.initials}</span>${badge(state(p))}</div><h3><a href="#project/${p.id}">${esc(p.name)}</a></h3><div class="category">${esc(p.category)}</div><p class="description">${esc(p.description)}</p>${checkRow(p)}<div class="card-foot"><span>⑂ ${prs ? prs.filter((r) => r.state === "open").length : "—"} отворени PR</span><a href="#project/${p.id}">Към таблото <span>→</span></a></div><div class="card-meta">${commit ? `Последно: ${esc(commit.commit?.message?.split("\n")[0])}` : s?.error ? esc(s.error) : p.repo ? "Очаква обновяване от GitHub" : projectData(p).site ? "Достъп чрез уеб адрес" : "Добави адрес на хранилището"}${Object.values(live[p.id] || {}).some((value) => value.stale) ? " · Има остарели данни" : ""}</div>${projectData(p).site ? `<div class="app-launch">${link(projectData(p).site, "Отвори приложението", "button subtle")}</div>` : ""}</article>`;
 }
 function guard() {
   return `<section class="panel guard-card"><div class="guard-icon">♧</div><h2>Всяка промяна минава през теб.</h2><p>Работното пространство събира данни и подготвя решения. Публикуването изисква отделно одобрение за конкретната версия.</p><ul><li>Без автоматично сливане на PR</li><li>Без автоматичен deploy</li><li>Съхранена история на редакциите</li></ul></section>`;
@@ -345,7 +349,7 @@ function render() {
   else if (route.view === "history") renderHistory(ps);
   else
     $("#view").innerHTML =
-      `<div class="section-top"><h2>Текущи проекти <span class="muted"> / ${String(ps.length).padStart(2, "0")}</span></h2><p>GitHub · проверки · работни записи</p></div><div class="project-grid">${ps.map(projectCard).join("") || '<div class="empty">Няма проекти с тези филтри.</div>'}</div><div class="bottom-grid">${activities(ps)}${guard()}</div>`;
+      `<div class="section-top"><h2>Всички приложения и проекти <span class="muted"> / ${String(ps.length).padStart(2, "0")}</span></h2><p>GitHub · проверки · работни записи</p></div><div class="project-grid">${ps.map(projectCard).join("") || '<div class="empty">Няма проекти с тези филтри.</div>'}</div><div class="bottom-grid">${activities(ps)}${guard()}</div>`;
 }
 function recordHTML(p, r, kind) {
   return `<article class="record"><div class="record-head"><h3>${esc(r.title)}</h3>${badge(r.state === "blocked" ? "blocked" : r.state === "done" ? "active" : "unknown", recordStates[r.state])}</div>${r.body ? `<p>${esc(r.body)}</p>` : ""}<small>${esc(p.name)} · ${date(r.updatedAt, true)}${r.due ? " · Срок: " + esc(r.due) : ""}</small><div class="record-actions"><button class="button subtle" data-edit="${esc(r.id)}" data-project="${p.id}" data-kind="${kind}">Редактирай</button><button class="button subtle" data-record-history="${esc(r.id)}" data-project="${p.id}" data-kind="${kind}">История</button>${kind === "tasks" && r.state !== "done" ? `<button class="button subtle" data-done="${esc(r.id)}" data-project="${p.id}">✓ Завърши</button>` : ""}</div></article>`;
