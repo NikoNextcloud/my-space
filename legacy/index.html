@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="bg">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Личен dashboard с бърз достъп до любими приложения и инструменти.">
+  <title>Моят Dashboard</title>
+  <link rel="icon" type="image/png" href="../assets/dashboard-icon-3.png">
+  <link rel="apple-touch-icon" href="../assets/dashboard-icon-3.png">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="ambient ambient-one"></div>
+  <div class="ambient ambient-two"></div>
+  <main class="shell"><p><a href="../">← Работен център</a></p>
+    <header class="topbar">
+      <a class="brand" href="#" aria-label="Начало">
+        <img class="brand-logo" src="../assets/dashboard-icon-3.png" alt="">
+        <span><strong>MY SPACE</strong><small>Личен dashboard</small></span>
+      </a>
+      <div class="top-actions">
+        <span class="sync-status" id="syncStatus" data-state="idle">Зареждане...</span>
+        <button class="icon-button" id="themeButton" type="button" aria-label="Смени темата">☼</button>
+        <button class="add-button" id="openAddButton" type="button"><span>＋</span> Добави линк</button>
+      </div>
+    </header>
+
+    <section class="content" aria-labelledby="linksTitle">
+      <div class="section-heading">
+        <div><p class="eyebrow">ТВОЯТА КОЛЕКЦИЯ</p><h2 id="linksTitle">Приложения</h2></div>
+        <p id="resultCount"></p>
+      </div>
+      <label class="search-box compact-search">
+        <span>⌕</span>
+        <input id="searchInput" type="search" placeholder="Търси приложение..." autocomplete="off">
+        <kbd>/</kbd>
+      </label>
+      <div class="filters" id="filters" aria-label="Филтри"></div>
+      <div class="cards" id="cards"></div>
+      <div class="empty-state" id="emptyState" hidden><span>⌕</span><h3>Няма намерени резултати</h3><p>Опитай с друга дума или категория.</p></div>
+    </section>
+
+    <footer><span>MY SPACE</span><p>Твоите важни места, винаги наблизо.</p></footer>
+  </main>
+
+  <dialog id="addDialog">
+    <form id="addForm">
+      <div class="modal-heading"><div><p class="eyebrow" id="dialogEyebrow">НОВ ПРЯК ПЪТ</p><h2 id="dialogTitle">Добави линк</h2></div><button class="close-button" id="closeDialogButton" type="button" aria-label="Затвори">×</button></div>
+      <p class="modal-note">При включен облак промените се виждат и на телефона. Без облак се пазят само в този браузър.</p>
+      <input name="id" type="hidden">
+      <label>Име<input name="title" required maxlength="40" placeholder="Напр. Моето приложение"></label>
+      <label>Адрес<input name="url" type="text" required placeholder="https://..."></label>
+      <label>Категория<select name="category"><option>Инструменти</option><option>Медия</option><option>Спорт</option><option>Образование</option><option>AI & Дизайн</option><option>Други</option></select></label>
+      <label>Кратко описание<input name="description" maxlength="90" placeholder="Какво прави този линк?"></label>
+      <div class="form-actions"><button class="delete-button" id="deleteButton" type="button" hidden>Изтрий</button><span class="form-spacer"></span><button class="cancel-button" id="cancelButton" type="button">Отказ</button><button class="save-button" id="saveButton" type="submit">Запази</button></div>
+    </form>
+  </dialog>
+
+  <script src="../links.js"></script>
+  <script src="../sync-config.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
