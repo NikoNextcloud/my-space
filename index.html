@@ -9,6 +9,13 @@
     />
     <meta name="robots" content="noindex,nofollow" />
     <title>MY SPACE · Работен център</title>
+    <script>
+      (() => {
+        const saved = localStorage.getItem("my-space-theme");
+        const theme = saved || (matchMedia("(prefers-color-scheme: light)").matches ? "light" : "dark");
+        document.documentElement.dataset.theme = theme;
+      })();
+    </script>
     <link rel="icon" href="assets/dashboard-icon-3.png" />
     <link rel="stylesheet" href="styles.css" />
   </head>
@@ -64,6 +71,9 @@
           ><strong id="breadcrumb">Общ преглед</strong>
         </div>
         <div class="header-right">
+          <button class="theme-toggle" id="themeToggle" type="button" aria-label="Включи светла тема">
+            <span class="theme-icon" aria-hidden="true">☀</span><span class="theme-label">Светла тема</span>
+          </button>
           <span class="date" id="currentDate"></span
           ><span class="avatar small">NT</span>
         </div>
