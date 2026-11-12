@@ -78,6 +78,26 @@ function current() {
   const [view, id] = location.hash.slice(1).split("/");
   return { view: view || "overview", id };
 }
+function syncThemeButton() {
+  const light = document.documentElement.dataset.theme === "light";
+  const button = $("#themeToggle");
+  button.querySelector(".theme-icon").textContent = light ? "☾" : "☀";
+  button.querySelector(".theme-label").textContent = light
+    ? "Тъмна тема"
+    : "Светла тема";
+  button.setAttribute(
+    "aria-label",
+    light ? "Включи тъмна тема" : "Включи светла тема",
+  );
+  button.setAttribute("aria-pressed", String(light));
+}
+function toggleTheme() {
+  const next =
+    document.documentElement.dataset.theme === "light" ? "dark" : "light";
+  document.documentElement.dataset.theme = next;
+  localStorage.setItem("my-space-theme", next);
+  syncThemeButton();
+}
 function projectData(p) {
   return { ...p, ...docs[p.id]?.links };
 }
@@ -679,6 +699,8 @@ function historyDialog(p, kind, id) {
   if (!$("#historyDialog").open) $("#historyDialog").showModal();
 }
 $("#refreshButton").onclick = refresh;
+$("#themeToggle").onclick = toggleTheme;
+syncThemeButton();
 for (const id of ["search", "projectFilter", "statusFilter"])
   $("#" + id).addEventListener(id === "search" ? "input" : "change", render);
 window.addEventListener("hashchange", () => {

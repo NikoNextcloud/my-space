@@ -277,6 +277,26 @@ nav a .project-dot {
   align-items: center;
   gap: 22px;
 }
+.theme-toggle {
+  min-height: 36px;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  padding: 7px 12px;
+  background: var(--panel);
+  color: var(--text);
+  font-size: 10px;
+  font-weight: 700;
+}
+.theme-toggle:hover {
+  border-color: #8a9d74;
+}
+.theme-icon {
+  font-size: 16px;
+  line-height: 1;
+}
 .date {
   color: var(--muted);
 }
@@ -1020,6 +1040,156 @@ form textarea {
 }
 #toast.show {
   display: block;
+}
+
+html[data-theme="light"] {
+  color-scheme: light;
+  --bg: #f4f6f2;
+  --panel: #ffffff;
+  --panel2: #f0f3ee;
+  --line: #d7ddd2;
+  --text: #1b211d;
+  --muted: #667168;
+  --accent: #4f7807;
+  --danger: #a92f3f;
+  --warn: #8a5a09;
+}
+html[data-theme="light"] body {
+  background: linear-gradient(180deg, #fafbf8 0, var(--bg) 340px);
+}
+html[data-theme="light"] .sidebar {
+  background: #f9faf7;
+  box-shadow: 8px 0 30px rgb(37 50 34 / 4%);
+}
+html[data-theme="light"] .brand-mark,
+html[data-theme="light"] .button.primary,
+html[data-theme="light"] #toast,
+html[data-theme="light"] .skip {
+  color: #fafff3;
+}
+html[data-theme="light"] .avatar {
+  background: #e3eadc;
+  color: #3c6200;
+}
+html[data-theme="light"] .nav-label,
+html[data-theme="light"] nav a,
+html[data-theme="light"] .policy small,
+html[data-theme="light"] .breadcrumb b,
+html[data-theme="light"] footer {
+  color: #68736b;
+}
+html[data-theme="light"] nav a.active {
+  background: #e7f0d8;
+  color: #3e6500;
+}
+html[data-theme="light"] nav a:hover,
+html[data-theme="light"] .count {
+  background: #edf1ea;
+}
+html[data-theme="light"] .policy {
+  color: #354039;
+}
+html[data-theme="light"] .button {
+  border-color: #cbd3c7;
+  background: #f5f7f3;
+}
+html[data-theme="light"] .button:hover,
+html[data-theme="light"] .theme-toggle:hover {
+  border-color: #749449;
+}
+html[data-theme="light"] .button.primary {
+  background: #4f7807;
+  border-color: #4f7807;
+}
+html[data-theme="light"] .notice {
+  color: #42533f;
+  border-color: #cad8c1;
+  background: #f0f6ea;
+}
+html[data-theme="light"] .metric .metric-icon,
+html[data-theme="light"] .activity-icon {
+  background: #edf4e6;
+}
+html[data-theme="light"] input,
+html[data-theme="light"] select,
+html[data-theme="light"] textarea,
+html[data-theme="light"] .search {
+  background: #fff;
+}
+html[data-theme="light"] .project-card {
+  box-shadow: 0 10px 28px rgb(35 48 31 / 5%);
+}
+html[data-theme="light"] .project-card:hover {
+  border-color: #9aaa91;
+  box-shadow: 0 15px 32px rgb(35 48 31 / 9%);
+}
+html[data-theme="light"] .badge {
+  border-color: #adc28f;
+  color: #3f6508;
+  background: #edf5e3;
+}
+html[data-theme="light"] .badge.gray {
+  background: #eef1f2;
+  color: #56616a;
+  border-color: #cdd4d8;
+}
+html[data-theme="light"] .badge.red {
+  background: #fff0f1;
+  color: #a92f3f;
+  border-color: #efc2c7;
+}
+html[data-theme="light"] .badge.amber {
+  background: #fff6e5;
+  color: #825408;
+  border-color: #ead2a3;
+}
+html[data-theme="light"] .badge.purple {
+  background: #f3effc;
+  color: #65469b;
+  border-color: #d4c7eb;
+}
+html[data-theme="light"] .project-card .category,
+html[data-theme="light"] .record small,
+html[data-theme="light"] .activity small,
+html[data-theme="light"] .card-meta {
+  color: #6f7972;
+}
+html[data-theme="light"] .check strong,
+html[data-theme="light"] .card-foot a,
+html[data-theme="light"] .empty > strong,
+html[data-theme="light"] .mono,
+html[data-theme="light"] form label {
+  color: #38433c;
+}
+html[data-theme="light"] .check strong.good {
+  color: #39700b;
+}
+html[data-theme="light"] .guard-card {
+  background: linear-gradient(130deg, #f0f6e9, #f8faf6);
+  border-color: #c5d5b9;
+}
+html[data-theme="light"] .guard-card p,
+html[data-theme="light"] .guard-card ul,
+html[data-theme="light"] .banner {
+  color: #485745;
+}
+html[data-theme="light"] .guard-card li {
+  border-color: #d6e0cf;
+}
+html[data-theme="light"] .detail-tabs button.active {
+  background: #e7f0d8;
+  color: #3e6500;
+}
+html[data-theme="light"] .banner {
+  border-color: #c8d6be;
+  background: #f0f6ea;
+}
+html[data-theme="light"] dialog::backdrop {
+  background: rgb(20 28 22 / 38%);
+}
+html[data-theme="light"] #toast {
+  background: #4f7807;
+  box-shadow: 0 10px 40px rgb(20 30 18 / 22%);
 }
 .skip {
   position: fixed;
